@@ -1,21 +1,36 @@
 <?php
-if (isset($_POST['submit'])) {
+
   $name = $_POST['name'];
   $email = $_POST['email'];
   $phone = $_POST['phone'];
-  $sub = $_POST['subject'];
-  $msg = $_POST['message'];
-
-  $to='uid3infoiconsoftware@gmail.com'; // Receiver Email ID, Replace with your email ID
-    $subject='Form Submission';
-    $message="Name :".$name."\n"."Phone :".$phone."\n"."Wrote the following :"."\n\n".$msg;
-    $headers="From: ".$email;
-
-    if(mail($to, $subject, $message, $headers)){
-        echo "<h1>Sent Successfully! Thank you"." ".$name.", We will contact you shortly!</h1>";
-    }
-    else{
-        echo "Something went wrong!";
-    }
-}
-?>
+  $subject = $_POST['subject'];
+  $message = $_POST['message'];
+  
+  require "vendor/autoload.php";
+  
+  use PHPMailer\PHPMailer\PHPMailer;
+  use PHPMailer\PHPMailer\SMTP;
+  
+  $mail = new PHPMailer(true);
+  
+  // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+  
+  $mail->isSMTP();
+  $mail->SMTPAuth = true;
+  
+  $mail->Host = "smtp.example.com";
+  $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+  $mail->Port = 587;
+  
+  $mail->Username = "uid3infoiconsoftware@gmail.com";
+  $mail->Password = "Infoicon@123";
+  
+  $mail->setFrom($email, $name);
+  $mail->addAddress("uid3@infoiconsoftware.com", "uid3");
+  
+  $mail->Subject = $subject;
+  $mail->Body = $message;
+  
+  $mail->send();
+  
+  header("Location: thanks.html");
